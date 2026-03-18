@@ -6,7 +6,7 @@ import asyncio
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import structlog
 from fastapi import APIRouter, Header, HTTPException
@@ -14,9 +14,11 @@ from pydantic import BaseModel, Field
 from qdrant_client import QdrantClient
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import FieldCondition, Filter, MatchValue, Range
-from sentence_transformers import SentenceTransformer
 
 from config.settings import get_settings
+
+if TYPE_CHECKING:
+    from sentence_transformers import SentenceTransformer
 
 router = APIRouter(tags=["search"])
 log = structlog.get_logger(__name__)
@@ -143,6 +145,8 @@ async def _get_model() -> SentenceTransformer:
 
     async with _model_lock:
         if _model is None:
+            from sentence_transformers import SentenceTransformer
+
             loop = asyncio.get_running_loop()
             _model = await loop.run_in_executor(
                 _executor,
