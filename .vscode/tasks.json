@@ -1,0 +1,75 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🐳 docker: up (full stack)",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "group": "build"
+    },
+    {
+      "label": "🐳 docker: down",
+      "type": "shell",
+      "command": "docker compose down"
+    },
+    {
+      "label": "🐳 docker: logs normalizer",
+      "type": "shell",
+      "command": "docker compose logs -f normalizer"
+    },
+    {
+      "label": "🐳 docker: rebuild workers",
+      "type": "shell",
+      "command": "docker compose build connector-runner normalizer vectorizer && docker compose up -d connector-runner normalizer vectorizer"
+    },
+    {
+      "label": "🧪 test: unit",
+      "type": "shell",
+      "command": "pytest tests/unit -v --tb=short",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "🧪 test: unit + coverage",
+      "type": "shell",
+      "command": "pytest tests/unit -v --cov --cov-report=term-missing"
+    },
+    {
+      "label": "🧪 test: integration",
+      "type": "shell",
+      "command": "pytest tests/integration -m integration -v"
+    },
+    {
+      "label": "🚀 api: run locally",
+      "type": "shell",
+      "command": "uvicorn api.main:app --host 0.0.0.0 --port 8080 --reload"
+    },
+    {
+      "label": "🔧 connectors: run locally",
+      "type": "shell",
+      "command": "python -m scripts.run_connectors"
+    },
+    {
+      "label": "🎨 frontend: dev server",
+      "type": "shell",
+      "command": "cd frontend && npm run dev"
+    },
+    {
+      "label": "🔍 lint: ruff check",
+      "type": "shell",
+      "command": "ruff check . && ruff format --check ."
+    },
+    {
+      "label": "🔒 security: bandit",
+      "type": "shell",
+      "command": "bandit -r . -c bandit.yaml"
+    },
+    {
+      "label": "📊 load test",
+      "type": "shell",
+      "command": "locust -f tests/load/locustfile.py --host http://localhost:8080"
+    }
+  ]
+}

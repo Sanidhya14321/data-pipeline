@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment files
+.env
+!.env.example
+
+# Kubernetes secrets (never commit)
+k8s/**/secret*.yaml
+k8s/**/secrets*.yaml
+k8s/**/secret*.yml
+k8s/**/secrets*.yml
+
+# IDE
+.vscode/settings.json

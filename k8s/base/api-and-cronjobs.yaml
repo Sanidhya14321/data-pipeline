@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-api
+  namespace: pipeline
+  labels:
+    app: pipeline-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pipeline-api
+  template:
+    metadata:
+      labels:
+        app: pipeline-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/your-org/data-pipeline-worker:latest
+          command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8080"]
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - secretRef:
+                name: pipeline-secrets
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/ready
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipeline-api
+  namespace: pipeline
+  labels:
+    app: pipeline-api
+spec:
+  type: ClusterIP
+  selector:
+    app: pipeline-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: connector-rss
+  namespace: pipeline
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: connector-rss
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: connector-rss
+              image: ghcr.io/your-org/data-pipeline-worker:latest
+              command: ["python", "-m", "scripts.run_connectors"]
+              env:
+                - name: CONNECTOR_TYPE
+                  value: rss
+              envFrom:
+                - secretRef:
+                    name: pipeline-secrets
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: connector-sec
+  namespace: pipeline
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: connector-sec
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: connector-sec
+              image: ghcr.io/your-org/data-pipeline-worker:latest
+              command: ["python", "-m", "scripts.run_connectors"]
+              env:
+                - name: CONNECTOR_TYPE
+                  value: sec
+              envFrom:
+                - secretRef:
+                    name: pipeline-secrets
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pipeline-secrets
+  namespace: pipeline
+type: Opaque
+# Template only: never commit real credential values.
+stringData:
+  KAFKA_BROKERS: "kafka:29092"
+  KAFKA_SECURITY_PROTOCOL: "SASL_SSL"
+  KAFKA_SASL_MECHANISM: "PLAIN"
+  KAFKA_USERNAME: "replace-me"
+  KAFKA_PASSWORD: "replace-me"
+  KAFKA_TOPIC_RAW_EVENTS: "raw.events"
+  KAFKA_TOPIC_NORMALIZED_EVENTS: "normalized.events"
+  KAFKA_TOPIC_EMBEDDING_JOBS: "embedding.jobs"
+  KAFKA_TOPIC_DLQ: "dead.letter.queue"
+  DATABASE_URL: "postgresql+asyncpg://pipeline:replace-me@postgres:5432/pipeline"
+  POSTGRES_POOL_MIN_SIZE: "5"
+  POSTGRES_POOL_MAX_SIZE: "20"
+  QDRANT_URL: "http://qdrant:6333"
+  QDRANT_API_KEY: "replace-me"
+  QDRANT_COLLECTION: "pipeline_docs"
+  REDIS_URL: "redis://:replace-me@redis:6379/0"
+  REDIS_PASSWORD: "replace-me"
+  REDIS_DB: "0"
+  GROQ_API_KEY: "replace-me"
+  GROQ_CLASSIFY_MODEL: "llama-3.1-8b-instant"
+  GROQ_EXTRACT_MODEL: "llama-3.3-70b-versatile"
+  LLM_REQUEST_TIMEOUT_SECONDS: "30"
+  NEWS_API_KEY: "replace-me"
+  GITHUB_TOKEN: "replace-me"
+  SEC_USER_AGENT: "YourCompany contact@company.com"
+  GITHUB_API_BASE_URL: "https://api.github.com"
+  COMPOSIO_API_KEY: "replace-me"
+  COMPOSIO_WEBHOOK_SECRET: "replace-me"
+  PIPELINE_API_KEY: "replace-me"
+  LOG_LEVEL: "INFO"
+  ENVIRONMENT: "production"
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "8080"
+  METRICS_PORT: "9090"

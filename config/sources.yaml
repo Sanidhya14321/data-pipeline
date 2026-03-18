@@ -1,0 +1,114 @@
+sources:
+  - id: reuters-world-rss
+    type: rss
+    url: https://feeds.reuters.com/reuters/worldNews
+    interval_minutes: 5
+    enabled: true
+    category_hint: macro
+
+  - id: ft-markets-rss
+    type: rss
+    url: https://www.ft.com/markets?format=rss
+    interval_minutes: 7
+    enabled: true
+    category_hint: finance
+
+  - id: techcrunch-startups-rss
+    type: rss
+    url: https://techcrunch.com/category/startups/feed/
+    interval_minutes: 10
+    enabled: true
+    category_hint: tech
+
+  - id: github-trending-rss
+    type: rss
+    url: https://rsshub.app/github/trending/daily/python
+    interval_minutes: 30
+    enabled: true
+    category_hint: oss
+
+  - id: sec-filings-rss
+    type: rss
+    url: https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-k&count=100&output=atom
+    interval_minutes: 15
+    enabled: true
+    category_hint: sec
+
+  - id: cnbc-markets-rss
+    type: rss
+    url: https://www.cnbc.com/id/100003114/device/rss/rss.html
+    interval_minutes: 8
+    enabled: true
+    category_hint: finance
+
+  - id: venturebeat-ai-rss
+    type: rss
+    url: https://venturebeat.com/ai/feed/
+    interval_minutes: 12
+    enabled: true
+    category_hint: ai
+
+  - id: newsapi-finance
+    type: api
+    query: "(earnings OR fed OR inflation OR treasury) AND (stocks OR markets)"
+    interval_minutes: 5
+    enabled: true
+    category_hint: finance
+
+  - id: newsapi-tech
+    type: api
+    query: "(ai OR cloud OR semiconductors OR developer tools)"
+    interval_minutes: 5
+    enabled: true
+    category_hint: tech
+
+  - id: newsapi-cybersecurity
+    type: api
+    query: "(cybersecurity OR breach OR zero-day OR ransomware)"
+    interval_minutes: 10
+    enabled: true
+    category_hint: security
+
+  - id: newsapi-energy
+    type: api
+    query: "(oil OR natural gas OR utilities OR renewable energy)"
+    interval_minutes: 15
+    enabled: true
+    category_hint: macro
+
+  - id: sec-10q-megacap
+    type: sec
+    tickers: [AAPL, MSFT, GOOGL, AMZN, NVDA, META]
+    interval_minutes: 30
+    enabled: true
+    category_hint: sec
+    form_type: 10-Q
+
+  - id: sec-8k-megacap
+    type: sec
+    tickers: [AAPL, MSFT, GOOGL, AMZN, NVDA, META]
+    interval_minutes: 10
+    enabled: true
+    category_hint: sec
+    form_type: 8-K
+
+  - id: github-langchain-events
+    type: github
+    url: https://api.github.com/repos/langchain-ai/langchain/events
+    interval_minutes: 15
+    enabled: true
+    category_hint: oss
+
+  - id: github-groq-sdk-events
+    type: github
+    url: https://api.github.com/repos/groq/groq-python/events
+    interval_minutes: 15
+    enabled: true
+    category_hint: oss
+
+  - id: github-openai-python-events
+    type: github
+    url: https://api.github.com/repos/openai/openai-python/events
+    interval_minutes: 20
+    enabled: true
+    category_hint: oss

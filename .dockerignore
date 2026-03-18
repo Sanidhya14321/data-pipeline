@@ -1,0 +1,17 @@
+.git
+.gitignore
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+node_modules
+frontend/node_modules
+*.pyc
+*.pyo
+*.pyd
+*.log
+coverage.xml
+htmlcov
+qdrant_data
+postgres_data
+redis_data

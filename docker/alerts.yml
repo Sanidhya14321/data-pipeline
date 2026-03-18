@@ -1,0 +1,56 @@
+groups:
+  - name: pipeline-alerts
+    rules:
+      - alert: WorkerDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Worker down"
+          description: "A monitored pipeline target is down for more than 1 minute."
+
+      - alert: CriticalDLQSpike
+        expr: rate(pipeline_events_dlq_total[1m]) > 10
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical DLQ spike"
+          description: "DLQ rate exceeded 10 events/second for 2 minutes."
+
+      - alert: HighConsumerLag
+        expr: max(kafka_consumer_lag) > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High consumer lag"
+          description: "Kafka consumer lag exceeded 10000 for 5 minutes."
+
+      - alert: CircuitBreakerOpen
+        expr: pipeline_circuit_breaker_state == 2
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Circuit breaker open"
+          description: "At least one circuit breaker is in OPEN state."
+
+      - alert: SearchLatencyHigh
+        expr: histogram_quantile(0.95, sum(rate(pipeline_http_duration_seconds_bucket{path="/api/v1/search"}[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Search latency high"
+          description: "Search p95 latency is above 500ms for 5 minutes."
+
+      - alert: NormalizerThroughputDrop
+        expr: rate(pipeline_events_normalized_total[10m]) * 60 < 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Normalizer throughput drop"
+          description: "Normalizer throughput is below 10 events/min for 10 minutes."
