@@ -23,7 +23,8 @@ log = structlog.get_logger(__name__)
 settings = get_settings()
 
 _executor = ThreadPoolExecutor(max_workers=2)
-_model = SentenceTransformer("all-MiniLM-L6-v2")
+_model: SentenceTransformer | None = None
+_model_lock = asyncio.Lock()
 _qdrant = QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key or None)
 
 
@@ -125,11 +126,30 @@ async def search_endpoint(
 
 async def _embed_query(query: str) -> list[float]:
     """Embed query text in a thread pool to avoid blocking event loop."""
+    model = await _get_model()
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(
         _executor,
-        lambda: _model.encode(query, normalize_embeddings=True).tolist(),
+        lambda: model.encode(query, normalize_embeddings=True).tolist(),
     )
+
+
+async def _get_model() -> SentenceTransformer:
+    """Lazily initialize the embedding model to keep API startup fast."""
+    global _model
+
+    if _model is not None:
+        return _model
+
+    async with _model_lock:
+        if _model is None:
+            loop = asyncio.get_running_loop()
+            _model = await loop.run_in_executor(
+                _executor,
+                lambda: SentenceTransformer("all-MiniLM-L6-v2"),
+            )
+
+    return _model
 
 
 def _build_qdrant_filter(search_filter: SearchFilter | None) -> Filter | None:
