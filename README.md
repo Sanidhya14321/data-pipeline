@@ -69,7 +69,7 @@ A high-performance financial data pipeline with semantic search, LLM-powered cla
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-![flowchart](/data-pipeline/flowchart.png)
+![flowchart](flowchart.png)
 
 
 ## 🔄 Fallback Search Flow
