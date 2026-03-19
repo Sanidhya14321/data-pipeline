@@ -20,3 +20,19 @@ k8s/**/secrets*.yml
 
 # IDE
 .vscode/settings.json
+
+# Frontend / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/tsconfig.tsbuildinfo
