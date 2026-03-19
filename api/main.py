@@ -80,6 +80,12 @@ app.include_router(stats.router, prefix="/api/v1")
 app.mount("/metrics", make_asgi_app())
 
 
+@app.get("/")
+async def root() -> dict[str, str]:
+    """Simple root endpoint for platform health probing."""
+    return {"status": "ok", "service": "data-pipeline-api"}
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Return a generic 500 payload for unexpected exceptions."""
