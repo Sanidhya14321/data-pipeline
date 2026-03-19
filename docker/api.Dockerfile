@@ -11,16 +11,16 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements-api.txt /app/requirements-api.txt
+COPY data-pipeline/requirements-api.txt /app/requirements-api.txt
 RUN pip install --no-cache-dir --prefer-binary -r /app/requirements-api.txt
 
 RUN addgroup --system --gid 1001 appgroup \
     && adduser --system --uid 1001 --ingroup appgroup appuser
 
-COPY --chown=appuser:appgroup api /app/api
-COPY --chown=appuser:appgroup config /app/config
+COPY --chown=appuser:appgroup data-pipeline/api /app/api
+COPY --chown=appuser:appgroup data-pipeline/config /app/config
 RUN mkdir -p /app/workers
-COPY --chown=appuser:appgroup workers/db.py /app/workers/db.py
+COPY --chown=appuser:appgroup data-pipeline/workers/db.py /app/workers/db.py
 
 USER appuser
 
