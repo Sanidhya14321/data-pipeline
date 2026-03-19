@@ -21,6 +21,8 @@ COPY --chown=appuser:appgroup api /app/api
 COPY --chown=appuser:appgroup config /app/config
 RUN mkdir -p /app/workers
 COPY --chown=appuser:appgroup workers/db.py /app/workers/db.py
+COPY docker/entrypoint.api.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 USER appuser
 
@@ -29,4 +31,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
   CMD curl -fsS http://localhost:8080/api/v1/ready >/dev/null || exit 1
 
-CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+ENTRYPOINT ["/entrypoint.sh"]
