@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+prometheus-client
+structlog
+pydantic
+pydantic-settings
+qdrant-client
+redis
+sqlalchemy[asyncio]
+asyncpg
+sentence-transformers

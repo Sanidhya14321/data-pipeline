@@ -6,6 +6,15 @@ __pycache__
 .mypy_cache
 node_modules
 frontend/node_modules
+frontend/dist
+frontend/.vite
+frontend/.cache
+frontend/
+tests/
+k8s/
+docker-compose.yml
+README.md
+docs/
 *.pyc
 *.pyo
 *.pyd

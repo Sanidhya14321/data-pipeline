@@ -1,0 +1,13 @@
+[build]
+builder = "dockerfile"
+dockerfile = "docker/api.Dockerfile"
+
+[deploy]
+startCommand = "uvicorn api.main:app --host 0.0.0.0 --port $PORT"
+healthCheckPath = "/api/v1/ready"
+healthCheckInterval = 30
+
+[env]
+PORT = "8080"
+ENVIRONMENT = "production"
+PYTHONUNBUFFERED = "1"
