@@ -15,6 +15,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import FieldCondition, Filter, MatchValue, Range
 
+from api.services.fallback_search import fallback_web_search
 from config.settings import get_settings
 
 if TYPE_CHECKING:
@@ -80,10 +81,10 @@ async def search_endpoint(
         raise HTTPException(status_code=403, detail="Forbidden")
 
     started = time.perf_counter()
-    query_vector = await _embed_query(payload.query)
     qdrant_filter = _build_qdrant_filter(payload.filter)
 
     try:
+        query_vector = await _embed_query(payload.query)
         points = await asyncio.get_running_loop().run_in_executor(
             None,
             lambda: _qdrant.search(
@@ -95,8 +96,14 @@ async def search_endpoint(
             ),
         )
     except (UnexpectedResponse, Exception) as exc:
-        log.error("search.qdrant_unavailable", error=str(exc))
-        raise HTTPException(status_code=503, detail="Search index unavailable") from exc
+        log.warning("search.primary_failed_fallback_enabled", error=str(exc))
+        fallback_results = await fallback_web_search(payload.query, payload.top_k)
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        return SearchResponse(
+            results=[SearchResult(**item) for item in fallback_results],
+            total=len(fallback_results),
+            latency_ms=latency_ms,
+        )
 
     results: list[SearchResult] = []
     for point in points:

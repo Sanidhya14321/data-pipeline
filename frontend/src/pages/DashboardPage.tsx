@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import PageWrapper from "../components/layout/PageWrapper";
 
 type HealthStatus = "ok" | "degraded" | "error" | "healthy" | string;
 
@@ -156,8 +157,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="page-root page-offset section dashboard-page">
-      <div className="container">
+    <PageWrapper>
+      <div className="page-root page-offset section dashboard-page">
+        <div className="container">
         <div className="section-heading">
           <p className="eyebrow">Telemetry</p>
           <h1>Production Dashboard</h1>
@@ -262,7 +264,8 @@ export default function DashboardPage() {
             ) : null}
           </div>
         </section>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

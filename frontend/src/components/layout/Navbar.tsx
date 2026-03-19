@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { navLinks } from "../../lib/theme";
 
@@ -41,6 +42,13 @@ export default function Navbar() {
                 className={cn("nav-link", active && "nav-link-active")}
               >
                 {link.label}
+                {active ? (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    className="nav-active-pill"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                ) : null}
               </Link>
             );
           })}

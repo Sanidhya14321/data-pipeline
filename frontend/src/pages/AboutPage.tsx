@@ -1,3 +1,5 @@
+import PageWrapper from "../components/layout/PageWrapper";
+
 const values = [
   "Reliability over novelty",
   "Operational clarity",
@@ -13,8 +15,9 @@ const timeline = [
 
 export default function AboutPage() {
   return (
-    <div className="page-root page-offset section">
-      <div className="container">
+    <PageWrapper>
+      <div className="page-root page-offset section">
+        <div className="container">
         <div className="section-heading">
           <p className="eyebrow">About</p>
           <h1>We build data systems that stay calm under pressure.</h1>
@@ -65,7 +68,8 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

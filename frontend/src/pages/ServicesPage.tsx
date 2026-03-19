@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+import PageWrapper from "../components/layout/PageWrapper";
 import { services } from "../lib/theme";
 
 export default function ServicesPage() {
   return (
-    <div className="page-root page-offset section">
-      <div className="container">
+    <PageWrapper>
+      <div className="page-root page-offset section">
+        <div className="container">
         <div className="section-heading">
           <p className="eyebrow">Services</p>
           <h1>Everything needed to operate a modern event intelligence stack.</h1>
@@ -35,7 +37,8 @@ export default function ServicesPage() {
           </div>
           <Link to="/signup" className="btn btn-primary">Get Started</Link>
         </section>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

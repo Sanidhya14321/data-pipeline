@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PageWrapper from "../components/layout/PageWrapper";
 
 export default function SignupPage() {
   const [agree, setAgree] = useState(false);
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
+    <PageWrapper>
+      <div className="auth-page">
+        <div className="auth-card">
         <p className="eyebrow">Create Account</p>
         <h1>Start your production pipeline</h1>
 
@@ -46,7 +48,8 @@ export default function SignupPage() {
         <p className="auth-switch">
           Already have an account? <Link to="/login">Log in</Link>
         </p>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

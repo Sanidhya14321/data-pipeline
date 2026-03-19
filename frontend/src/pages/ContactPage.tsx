@@ -1,11 +1,13 @@
 import { useState } from "react";
+import PageWrapper from "../components/layout/PageWrapper";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
 
   return (
-    <div className="page-root page-offset section">
-      <div className="container contact-layout">
+    <PageWrapper>
+      <div className="page-root page-offset section">
+        <div className="container contact-layout">
         <section className="contact-form-shell">
           <p className="eyebrow">Contact</p>
           <h1>Tell us what you need.</h1>
@@ -47,7 +49,8 @@ export default function ContactPage() {
           </ul>
           <div className="map-placeholder">Map / office location</div>
         </aside>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

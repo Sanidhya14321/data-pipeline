@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import PageWrapper from "../components/layout/PageWrapper";
 
 export default function LoginPage() {
   return (
-    <div className="auth-page">
-      <div className="auth-card">
+    <PageWrapper>
+      <div className="auth-page">
+        <div className="auth-card">
         <p className="eyebrow">Welcome Back</p>
         <h1>Log in to your workspace</h1>
 
@@ -33,7 +35,8 @@ export default function LoginPage() {
         <p className="auth-switch">
           New here? <Link to="/signup">Create an account</Link>
         </p>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

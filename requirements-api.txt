@@ -8,4 +8,6 @@ qdrant-client
 redis
 sqlalchemy[asyncio]
 asyncpg
-sentence-transformers
+aiohttp
+feedparser
+groq
