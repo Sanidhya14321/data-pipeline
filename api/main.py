@@ -12,9 +12,11 @@ from fastapi.responses import JSONResponse
 from prometheus_client import Counter, Histogram, make_asgi_app
 
 from api.routes import health, search, stats
+from config.settings import get_settings
 from workers.db import init_schema
 
 log = structlog.get_logger(__name__)
+settings = get_settings()
 
 pipeline_http_requests_total = Counter(
     "pipeline_http_requests_total",
@@ -44,7 +46,7 @@ app = FastAPI(title="Data Pipeline API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=settings.parsed_cors_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

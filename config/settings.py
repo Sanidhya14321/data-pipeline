@@ -72,6 +72,10 @@ class Settings(BaseSettings):
     app_host: str = Field("0.0.0.0", alias="APP_HOST")
     app_port: int = Field(8080, alias="APP_PORT")
     metrics_port: int = Field(9090, alias="METRICS_PORT")
+    cors_allowed_origins: str = Field(
+        "http://localhost:3000,http://localhost:5173",
+        alias="CORS_ALLOWED_ORIGINS",
+    )
 
     @property
     def prometheus_port(self) -> int:
@@ -83,6 +87,11 @@ class Settings(BaseSettings):
             Port used by Prometheus HTTP exporter.
         """
         return self.metrics_port
+
+    @property
+    def parsed_cors_allowed_origins(self) -> list[str]:
+        """Return CORS origins parsed from a comma-separated env var."""
+        return [origin.strip() for origin in self.cors_allowed_origins.split(",") if origin.strip()]
 
 
 @lru_cache(maxsize=1)
