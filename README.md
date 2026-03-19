@@ -69,6 +69,9 @@ A high-performance financial data pipeline with semantic search, LLM-powered cla
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+![flowchart](/data-pipeline/flowchart.png)
+
+
 ## 🔄 Fallback Search Flow
 
 When Qdrant is unavailable or slow:
